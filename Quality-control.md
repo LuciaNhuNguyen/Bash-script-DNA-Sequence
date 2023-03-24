@@ -71,7 +71,7 @@ $ zcat anc_R1.fast*.gz | head -20 # for compressed file
 ```
 
 ### For FASTA files
-Once the input file is read, the defline for the FASTA will be "name" variable and the sequence will be "seq" variable. 
+Once the input file is read, the defline for the FASTA will be \$name variable and the sequence will be \$seq variable. 
 ```bash
 # Count number of reads in a FASTA file
 $ awk '{count++} END {print count/4}' input.fasta
@@ -105,7 +105,7 @@ $ bioawk -cfastx 'BEGIN{while((getline k <"IDs.txt")>0)i[k]=1}{if(i[$name])print
  ```
  
 ### For fastq files
-Here, the -c fastx option remains same but bioawk will automatically recognize the fastq format and build the required variables, such as $name $seq $qual and $comment
+Here, the -c fastx option remains same but bioawk will automatically recognize the fastq format and build the required variables, such as \$name \$seq \$qual and \$comment
 ```bash
 # Count the number of records (reads)
 $ bioawk -t -c fastx 'END {print NR}' input.fastq
@@ -229,4 +229,7 @@ $ multiqc fastqc_result trimmed
 # Open report html webpage:
 $ google-chrome fastq_result/anc_R2_fastqc.html
 ```
+## REFERENCES
+1. Schmeier, S. (2020). *Computational Genomics Tutorial*. \[online\] Schmeierlab. Available at https://genomics.sschmeier.com. \[Accessed 24 Mar. 2023\].
+2. Seetharam, A. *BioAWK basics*. \[online\] Bioinformatics Workbook. Available at https://bioinformaticsworkbook.org/Appendix/Unix/bioawk-basics.html#gsc.tab=0. \[Accessed 24 Mar. 2023\].
 
