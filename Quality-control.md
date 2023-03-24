@@ -1,4 +1,4 @@
-# **DNA QUALITY CONTROl**
+# **DNA QUALITY CONTROL**
 
 ## TOOL INSTALLATION
 ```bash
@@ -157,6 +157,17 @@ L: is the read length in bp (e.g. 2x150 paired-end = 300)
 N: is the number of reads sequenced
 
 ## ADAPTER TRIMMING
+Quality trimming of our sequencing reads will remove bad quality called bases from our reads, which is especially important when dealing with variant identification.
+
+```bash
+# create env and install tools
+$ conda create --yes -n qc fastp fastqc multiqc
+
+# Activate env
+$ conda activate qc
+ ```
+ 
+Here, we are going to use the second approach with a tool called **fastp** to trim adapters and do quality trimming. **fastp** has a few characteristics which make it a great tool, most importantly: it is pretty fast, provides good information after the run, and can do quality trimming as well, thus saving us to use another tool to do this.
 
 Here, as an example we are trimming the sequence reads of the ancestor:
 ```bash
@@ -184,12 +195,6 @@ $ fastp --detect_adapter_for_pe
 -o trimmed/anc_R1.fastq.gz -O trimmed/anc_R2.fastq.gz: Specifies the two desired output read files
 
 ```bash
-# create env and install tools
-$ conda create --yes -n qc fastp fastqc multiqc
-
-# Activate env
-$ conda activate qc
-
 $ mkdir trimmed
 
 # Run fastp like this on the ancestor:
