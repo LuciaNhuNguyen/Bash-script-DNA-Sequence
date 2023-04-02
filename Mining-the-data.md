@@ -29,64 +29,33 @@ $ tail -n3 U477*
 Makes a table “tb.tsv” with the columns for all records: Accession number; Organism; Product.
 
 ### Method 1
-
-**PIPELINE**
 ```bash
 $ cat *.gb | grep -E 'AC |OS|/product'| tr -s " " | sed -E 's/AC|OS|FT//g; s/ //1; s/"|;//g; s/\/product=//g' | paste - - - > table.tsv
 ```
-`$ cat *.gb` concatenates (i.e., combine) the contents of all files in the current directory that have a .gb file extension.
-
-`$ grep -E 'AC |OS|/product'` searches for a pattern in a file using extended regular expressions. The -E option enables the use of extended regular expressions instead of the default basic regular expressions.
+Explanation:
+- `cat *.gb` concatenates (i.e., combine) the contents of all files in the current directory that have a .gb file extension.
+- `grep -E 'AC |OS|/product'` searches for a pattern in a file using extended regular expressions. The -E option enables the use of extended regular expressions instead of the default basic regular expressions.
 Eg: "|" : indicate alternation between two patterns.
+- `tr -s " "` uses **tr-** translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
+- `sed "s/ //1; s/"|;//g; s/\/product=//g'` Uses `sed-` stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the |; character sequence, and removing all occurrences of the /product= character sequence.
+- `sed -E 's/AC|OS|FT//g"` removes all occurrences of the regular expression pattern AC|OS|FT from the input text.
+- `paste - - -` merge three lines of input into a single line, with each line separated by a tab character.
+- `> table.tsv` redirects the standard output of a command to a file named table.tsv in the current directory.
 
-`$ tr -s " "` uses **tr-** translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
-
-`$ sed "s/ //1; s/"|;//g; s/\/product=//g'` Uses `sed-` stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the |; character sequence, and removing all occurrences of the /product= character sequence.
-
-`$ sed -E 's/AC|OS|FT//g"` removes all occurrences of the regular expression pattern AC|OS|FT from the input text.
-
-`$ paste - - -` merge three lines of input into a single line, with each line separated by a tab character.
-
-`> table.tsv` redirects the standard output of a command to a file named table.tsv in the current directory.
+```bash
+sed -i 's/original/new/g' file.txt
+```
+Explanation:
+- `sed` = Stream EDitor
+- `-i` = in-place (i.e. save back to the original file)
+- `-E` = extended regular expression rather than basic regular expressions.
+- `s` = the substitute command
+- `original` = a regular expression describing the word to replace (or just the word itself)
+-  `new` = the text to replace it with
+- `g` = global (i.e. replace all and not just the first occurrence)
+- `file.txt` = the file name
 
 ### Method 2
-
-Tests whether a string matches a regular expression. 
-```bash 
-=~
-```
-
-Indicates the beginning of the string.
-```bash 
-^
-```
-
-Deletes any semicolons (;).
-```bash 
-$ tr -d ';' 
-``` 
-
-Uses **awk** to remove the first field (i.e., the "OS" field) from the line and print the rest of the line. The result is a string that contains only the organism name.
-```bash
-$ awk '{$1=""; print $0}'
-``` 
-
-Uses **sed** to remove any leading spaces from the organism name. This is necessary because awk preserves the leading space that follows the "OS" field.
-```bash
-$ sed 's/ //'
-```
-
-Uses **awk** to extract the value of the "product" field from the line. Uses **-F=** option to specify that the field separator is the equals sign ("=") and then printing the second field (i.e., the value of the "product" field).
-```bash
-$ awk -F= '{print $2}'
-```
-
-Deletes any double quotes (").
-```bash 
-$ tr -d '"' 
-``` 
-
-**PIPELINE**
 ```bash 
 # Function pare_AOP()
 $ function pare_AOP(){
@@ -106,8 +75,16 @@ $ function pare_AOP(){
 	done < $1
 }
 ``` 
+Explanation:
+- `=~` tests whether a string matches a regular expression. 
+- `^` indicates the beginning of the string.
+- `tr -d ';'` deletes any semicolons (;).
+- `awk '{$1=""; print $0}'` uses `awk` to remove the first field (i.e., the "OS" field) from the line and print the rest of the line. The result is a string that contains only the organism name.
+- `sed 's/ //'` use **sed** to remove any leading spaces from the organism name. This is necessary because awk preserves the leading space that follows the "OS" field.
+- `awk -F= '{print $2}'` uses `awk` to extract the value of the "product" field from the line. Uses `-F=` option to specify that the field separator is the equals sign ("=") and then printing the second field (i.e., the value of the "product" field).
+- `tr -d '"'` deletes any double quotes (").
 
-**Checks variables**: **[[ -n "$AC" ]]**: This is a conditional expression that checks if the length of the variable $AC is greater than zero (i.e., if it is not empty) using the **-n** null operator. If the condition is true (i.e., if $AC is empty), the variable $AC is assigned the value "NULL_AC" using the assignment operator =. If the condition is false (i.e., if $AC is not empty), the code inside the if block is not executed, and the value of $AC remains unchanged. This is useful for cases where a missing or empty variable needs to be replaced with a default value.
+**Checks variables**: `[[ -n "$AC" ]]`: This is a conditional expression that checks if the length of the variable `$AC` is greater than zero (i.e., if it is not empty) using the `-n` null operator. If the condition is true (i.e., if `$AC` is empty), the variable `$AC` is assigned the value `"NULL_AC"` using the assignment operator `=`. If the condition is false (i.e., if `$AC` is not empty), the code inside the if block is not executed, and the value of `$AC` remains unchanged. This is useful for cases where a missing or empty variable needs to be replaced with a default value.
 ```bash 
 # NULL_AC
 $ if [[ -n "$AC" ]]
@@ -126,24 +103,9 @@ then
 fi
 ``` 
 
-**echo -e** displays a line of text to enable interpret backslash escapes. This prints out the value of the $AC, $ORG, $product variable, delimited by "===" characters and followed by a tab-separated character **(\t)**. The output is sent to the console.
-```bash 
-$ echo -e "==="$AC"\t==="$ORG"\t==="$product
-```
-
-**echo** without options to print out the values of the $AC, $ORG, and $product variables separated by tabs and sends the output to a file named "tb.tsv". The **>** symbol is used for output redirection to the file.
-```bash 
-$ echo -e $AC"\t"$ORG"\t"$product > tb.tsv
-``` 
-
 Adds header to tb.tsv.
 ```bash 
 $ echo -e ACCESSION_NUMBER"\t"ORGANISM"\t"Product > tb.tsv
-```
-
-Searches the specified directory and any subdirectories for files with the extension ".gb" and return a list of their file paths.
-```bash 
-$ find $path -name "*.gb"
 ```
 
 Does the same task pare_AOP for all the Accession List.
@@ -158,19 +120,14 @@ done
 
 $ cat tb.tsv
 ```  
+Explanation:
+- `find $path -name "*.gb"` searches the specified directory and any subdirectories for files with the extension ".gb" and return a list of their file paths.
+- `echo -e "==="$AC"\t==="$ORG"\t==="$product`: `echo -e` displays a line of text to enable interpret backslash escapes. This prints out the value of the `$AC`, `$ORG`, `$product` variable, delimited by `"==="` characters and followed by a tab-separated character `(\t)`. The output is sent to the console.
+- `echo -e $AC"\t"$ORG"\t"$product > tb.tsv` prints out the values of the `$AC`, `$ORG`, and `$product` variables separated by tabs and sends the output to a file named "tb.tsv". 
+- The `>>`  operator is used for redirecting the output of a command to a file in append mode.
+
+
 ### Method 3
-
-Uses **printf** to print the string "Title" followed by each element of the $title array on a new line. The **%s** format specifier is used to print each element of the array as a string, and the **\n** character is used to insert a newline after each element. The **[@]** notation expands to all elements of the array, and the double quotes **{}** are used to preserve any whitespace or special characters in the array elements.
-```bash
-$ printf '%s\n' Title "${title[@]}") 
-```
-
-The command will take input text that is already separated into columns by tab characters, and format it into a more readable table format by adjusting the width of each column. The output will be displayed in the terminal. **-s** defines the column delimiter for output. **-t** applies for creating a table by determining the number of columns. **$'\t'** tells column to use the tab character as the column separator.
-```bash
-$ column -ts $'\t' 
-```
-
-**PIPELINE**
 ```bash
 # Title 
 $ title=$(while read -r l; do echo $l; done < access_list)
@@ -187,6 +144,9 @@ $ paste <(printf '%s\n' Title "${title[@]}") \
       <(printf '%s\n' Product "${c[@]}") \
 | column -ts $'\t' > tb.tsv
 ```
+Explanation:
+- `printf '%s\n' Title "${title[@]}")` uses `printf` to print the string "Title" followed by each element of the `$title` array on a new line. The `%s` format specifier is used to print each element of the array as a string, and the `\n` character is used to insert a newline after each element. The `[@]` notation expands to all elements of the array, and the double quotes `{}` are used to preserve any whitespace or special characters in the array elements.
+- `column -ts $'\t'` takes input text that is already separated into columns by tab characters, and format it into a more readable table format by adjusting the width of each column. The output will be displayed in the terminal. **-s** defines the column delimiter for output. **-t** applies for creating a table by determining the number of columns. **$'\t'** tells column to use the tab character as the column separator.
 
 ## QUESTION 4
 ### Method 1
