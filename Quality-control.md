@@ -178,32 +178,32 @@ $ fastp --detect_adapter_for_pe
         -i data/anc_R1.fastq.gz -I data/anc_R2.fastq.gz
         -o trimmed/anc_R1.fastq.gz -O trimmed/anc_R2.fastq.gz
 ```
---detect_adapter_for_pe: Specifies that we are dealing with paired-end data.
+`--detect_adapter_for_pe`: Specifies that we are dealing with paired-end data.
 
---overrepresentation_analysis: Analyse the sequence collection for sequences that appear too often.
+`--overrepresentation_analysis`: Analyse the sequence collection for sequences that appear too often.
 
---correction: Will try to correct bases based on an overlap analysis of read1 and read2.
+`--correction`: Will try to correct bases based on an overlap analysis of read1 and read2.
 
---cut_right: Will use quality trimming and scan the read from start to end in a window. If the quality in the window is below what is required, the window plus all sequence towards the end is discarded and the read is kept if its still long enough.
+`--cut_right`: Will use quality trimming and scan the read from start to end in a window. If the quality in the window is below what is required, the window plus all sequence towards the end is discarded and the read is kept if its still long enough.
 
---thread: Specify how many concurrent threads the process can use.
+`--thread`: Specify how many concurrent threads the process can use.
 
---html and --json: We specify the location of some stat files.
+`--html` and `--json`: We specify the location of some stat files.
 
--i data/anc_R1.fastq.gz -I data/anc_R2.fastq.gz: Specifies the two input read files
+`-i data/anc_R1.fastq.gz -I data/anc_R2.fastq.gz`: Specifies the two input read files
 
--o trimmed/anc_R1.fastq.gz -O trimmed/anc_R2.fastq.gz: Specifies the two desired output read files
+`-o trimmed/anc_R1.fastq.gz -O trimmed/anc_R2.fastq.gz`: Specifies the two desired output read files
 
 ```bash
 $ mkdir trimmed
 
 # Run fastp like this on the ancestor:
-fastp --detect_adapter_for_pe --overrepresentation_analysis --correction  --cut_right --html trimmed/anc.fastp.html --json trimmed/anc.fastp.json --thread 2 -i data/anc_R1.fastq.gz -I data/anc_R2.fastq.gz -o trimmed/anc_R1.fastq.gz -O trimmed/anc_R2.fastq.gz
+$ fastp --detect_adapter_for_pe --overrepresentation_analysis --correction  --cut_right --html trimmed/anc.fastp.html --json trimmed/anc.fastp.json --thread 2 -i data/anc_R1.fastq.gz -I data/anc_R2.fastq.gz -o trimmed/anc_R1.fastq.gz -O trimmed/anc_R2.fastq.gz
 
 # Run the evolved samples through fastp
-fastp --detect_adapter_for_pe --overrepresentation_analysis --correction --cut_right --html trimmed/evol1.fastp.html --json trimmed/evol1.fastp.json --thread 2 -i data/evol1_R1.fastq.gz -I data/evol1_R2.fastq.gz -o trimmed/evol1_R1.fastq.gz -O trimmed/evol1_R2.fastq.gz
+$ fastp --detect_adapter_for_pe --overrepresentation_analysis --correction --cut_right --html trimmed/evol1.fastp.html --json trimmed/evol1.fastp.json --thread 2 -i data/evol1_R1.fastq.gz -I data/evol1_R2.fastq.gz -o trimmed/evol1_R1.fastq.gz -O trimmed/evol1_R2.fastq.gz
 
-fastp --detect_adapter_for_pe --overrepresentation_analysis --correction --cut_right --html trimmed/evol2.fastp.html --json trimmed/evol2.fastp.json --thread 2 -i data/evol2_R1.fastq.gz -I data/evol2_R2.fastq.gz -o trimmed/evol2_R1.fastq.gz -O trimmed/evol2_R2.fastq.gz
+$ fastp --detect_adapter_for_pe --overrepresentation_analysis --correction --cut_right --html trimmed/evol2.fastp.html --json trimmed/evol2.fastp.json --thread 2 -i data/evol2_R1.fastq.gz -I data/evol2_R2.fastq.gz -o trimmed/evol2_R1.fastq.gz -O trimmed/evol2_R2.fastq.gz
  ```
 
 ## RUN FASTQC AND MULTIQC ON THE TRIMMED DATA
