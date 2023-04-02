@@ -33,14 +33,14 @@ Makes a table “tb.tsv” with the columns for all records: Accession number; O
 $ cat *.gb | grep -E 'AC |OS|/product'| tr -s " " | sed -E 's/AC|OS|FT//g; s/ //1; s/"|;//g; s/\/product=//g' | paste - - - > table.tsv
 ```
 Explanation:
-- `cat *.gb` concatenates (i.e., combine) the contents of all files in the current directory that have a .gb file extension.
-- `grep -E 'AC |OS|/product'` searches for a pattern in a file using extended regular expressions. The -E option enables the use of extended regular expressions instead of the default basic regular expressions.
+- `cat *.gb` concatenates (i.e., combine) the contents of all files in the current directory that have a `.gb` file extension.
+- `grep -E 'AC |OS|/product'` searches for a pattern in a file using extended regular expressions. The `-E` option enables the use of extended regular expressions instead of the default basic regular expressions.
 Eg: "|" : indicate alternation between two patterns.
-- `tr -s " "` uses **tr-** translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
-- `sed "s/ //1; s/"|;//g; s/\/product=//g'` Uses `sed-` stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the |; character sequence, and removing all occurrences of the /product= character sequence.
-- `sed -E 's/AC|OS|FT//g"` removes all occurrences of the regular expression pattern AC|OS|FT from the input text.
+- `tr -s " "` uses `tr-` translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
+- `sed "s/ //1; s/"|;//g; s/\/product=//g'` uses `sed-` stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the `|;` character sequence, and removing all occurrences of the `/product=` character sequence.
+- `sed -E 's/AC|OS|FT//g"` removes all occurrences of the regular expression pattern `AC|OS|FT` from the input text.
 - `paste - - -` merge three lines of input into a single line, with each line separated by a tab character.
-- `> table.tsv` redirects the standard output of a command to a file named table.tsv in the current directory.
+- `> table.tsv` redirects the standard output of a command to a file named `table.tsv` in the current directory.
 
 ```bash
 sed -i 's/original/new/g' file.txt
@@ -79,10 +79,10 @@ Explanation:
 - `=~` tests whether a string matches a regular expression. 
 - `^` indicates the beginning of the string.
 - `tr -d ';'` deletes any semicolons (;).
-- `awk '{$1=""; print $0}'` uses `awk` to remove the first field (i.e., the "OS" field) from the line and print the rest of the line. The result is a string that contains only the organism name.
-- `sed 's/ //'` use **sed** to remove any leading spaces from the organism name. This is necessary because awk preserves the leading space that follows the "OS" field.
-- `awk -F= '{print $2}'` uses `awk` to extract the value of the "product" field from the line. Uses `-F=` option to specify that the field separator is the equals sign ("=") and then printing the second field (i.e., the value of the "product" field).
-- `tr -d '"'` deletes any double quotes (").
+- `awk '{$1=""; print $0}'` uses `awk` to remove the first field (i.e., the `OS` field) from the line and print the rest of the line. The result is a string that contains only the organism name.
+- `sed 's/ //'` uses `sed` to remove any leading spaces from the organism name. This is necessary because `awk` preserves the leading space that follows the `OS` field.
+- `awk -F= '{print $2}'` uses `awk` to extract the value of the `product` field from the line. Uses `-F=` option to specify that the field separator is the equals sign `=` and then printing the second field (i.e., the value of the `product` field).
+- `tr -d '"'` deletes any double quotes `"`.
 
 **Checks variables**: `[[ -n "$AC" ]]`: This is a conditional expression that checks if the length of the variable `$AC` is greater than zero (i.e., if it is not empty) using the `-n` null operator. If the condition is true (i.e., if `$AC` is empty), the variable `$AC` is assigned the value `"NULL_AC"` using the assignment operator `=`. If the condition is false (i.e., if `$AC` is not empty), the code inside the if block is not executed, and the value of `$AC` remains unchanged. This is useful for cases where a missing or empty variable needs to be replaced with a default value.
 ```bash 
@@ -121,9 +121,9 @@ done
 $ cat tb.tsv
 ```  
 Explanation:
-- `find $path -name "*.gb"` searches the specified directory and any subdirectories for files with the extension ".gb" and return a list of their file paths.
+- `find $path -name "*.gb"` searches the specified directory and any subdirectories for files with the extension `.gb` and return a list of their file paths.
 - `echo -e "==="$AC"\t==="$ORG"\t==="$product`: `echo -e` displays a line of text to enable interpret backslash escapes. This prints out the value of the `$AC`, `$ORG`, `$product` variable, delimited by `"==="` characters and followed by a tab-separated character `(\t)`. The output is sent to the console.
-- `echo -e $AC"\t"$ORG"\t"$product > tb.tsv` prints out the values of the `$AC`, `$ORG`, and `$product` variables separated by tabs and sends the output to a file named "tb.tsv". 
+- `echo -e $AC"\t"$ORG"\t"$product > tb.tsv` prints out the values of the `$AC`, `$ORG`, and `$product` variables separated by tabs and sends the output to a file named `tb.tsv`. 
 - The `>>`  operator is used for redirecting the output of a command to a file in append mode.
 
 
@@ -145,14 +145,14 @@ $ paste <(printf '%s\n' Title "${title[@]}") \
 | column -ts $'\t' > tb.tsv
 ```
 Explanation:
-- `printf '%s\n' Title "${title[@]}")` uses `printf` to print the string "Title" followed by each element of the `$title` array on a new line. The `%s` format specifier is used to print each element of the array as a string, and the `\n` character is used to insert a newline after each element. The `[@]` notation expands to all elements of the array, and the double quotes `{}` are used to preserve any whitespace or special characters in the array elements.
-- `column -ts $'\t'` takes input text that is already separated into columns by tab characters, and format it into a more readable table format by adjusting the width of each column. The output will be displayed in the terminal. **-s** defines the column delimiter for output. **-t** applies for creating a table by determining the number of columns. **$'\t'** tells column to use the tab character as the column separator.
+- `printf '%s\n' Title "${title[@]}")` uses `printf` to print the string `Title` followed by each element of the `$title` array on a new line. The `%s` format specifier is used to print each element of the array as a string, and the `\n` character is used to insert a newline after each element. The `[@]` notation expands to all elements of the array, and the double quotes `{}` are used to preserve any whitespace or special characters in the array elements.
+- `column -ts $'\t'` takes input text that is already separated into columns by tab characters, and format it into a more readable table format by adjusting the width of each column. The output will be displayed in the terminal. `-s` defines the column delimiter for output. `-t` applies for creating a table by determining the number of columns. `$'\t'` tells column to use the tab character as the column separator.
 
 ## QUESTION 4
 ### Method 1
 #### Creating FASTA (nucleotide) file from gb file.
 
-Concatenates all files in the current directory with the extension ".gb".
+Concatenates all files in the current directory with the extension `.gb`.
 ```bash
 $ cat *.gb
 ```
@@ -204,15 +204,8 @@ Matches all records except the first one (which is typically the header).
 $ NR>1
 ```
 
-**awk** command substitutes the first occurrence of the newline character **\n** with a tab character **\t**.
-```bash 
-$ sub("\n","\t")
-```
-
-Globally substitutes (i.e., replaces all occurrences of) the newline character **\n** with an empty string. 
-```bash 
-$ gsub("\n","")
-```
+- `sub("\n","\t")` replaces only the first occurrence of the newline character `\n` with a tab character `\t`.
+- `gsub("\n","")` replaces occurrences in whole string of the newline character `\n` with an empty string
 
 **PIPELINE**
 ```bash 
