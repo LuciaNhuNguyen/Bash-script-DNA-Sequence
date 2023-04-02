@@ -35,7 +35,7 @@ $ cat *.gb | grep -E 'AC |OS|/product'| tr -s " " | sed -E 's/AC|OS|FT//g; s/ //
 Explanation:
 - `cat *.gb` concatenates (i.e., combine) the contents of all files in the current directory that have a `.gb` file extension.
 - `grep -E 'AC |OS|/product'` searches for a pattern in a file using extended regular expressions. The `-E` option enables the use of extended regular expressions instead of the default basic regular expressions.
-Eg: "|" : indicate alternation between two patterns.
+Eg: `"|"` : indicate alternation between two patterns.
 - `tr -s " "` uses `tr-` translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
 - `sed "s/ //1; s/"|;//g; s/\/product=//g'` uses `sed-` stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the `|;` character sequence, and removing all occurrences of the `/product=` character sequence.
 - `sed -E 's/AC|OS|FT//g"` removes all occurrences of the regular expression pattern `AC|OS|FT` from the input text.
@@ -84,7 +84,7 @@ Explanation:
 - `awk -F= '{print $2}'` uses `awk` to extract the value of the `product` field from the line. Uses `-F=` option to specify that the field separator is the equals sign `=` and then printing the second field (i.e., the value of the `product` field).
 - `tr -d '"'` deletes any double quotes `"`.
 
-**Checks variables**: `[[ -n "$AC" ]]`: This is a conditional expression that checks if the length of the variable `$AC` is greater than zero (i.e., if it is not empty) using the `-n` null operator. If the condition is true (i.e., if `$AC` is empty), the variable `$AC` is assigned the value `"NULL_AC"` using the assignment operator `=`. If the condition is false (i.e., if `$AC` is not empty), the code inside the if block is not executed, and the value of `$AC` remains unchanged. This is useful for cases where a missing or empty variable needs to be replaced with a default value.
+**Checks variables**: `[[ -n "$AC" ]]`: This is a conditional expression that checks if the length of the variable `"$AC"` is greater than zero (i.e., if it is not empty) using the `-n` null operator. If the condition is true (i.e., if `"$AC"` is empty), the variable `"$AC"` is assigned the value `"NULL_AC"` using the assignment operator `=`. If the condition is false (i.e., if `"$AC"` is not empty), the code inside the if block is not executed, and the value of `"$AC"` remains unchanged. This is useful for cases where a missing or empty variable needs to be replaced with a default value.
 ```bash 
 # NULL_AC
 $ if [[ -n "$AC" ]]
@@ -121,10 +121,10 @@ done
 $ cat tb.tsv
 ```  
 Explanation:
-- `find $path -name "*.gb"` searches the specified directory and any subdirectories for files with the extension `.gb` and return a list of their file paths.
+- `find $path -name "*.gb"` searches the specified directory and any subdirectories for files with the extension `".gb"` and return a list of their file paths.
 - `echo -e "==="$AC"\t==="$ORG"\t==="$product`: `echo -e` displays a line of text to enable interpret backslash escapes. This prints out the value of the `$AC`, `$ORG`, `$product` variable, delimited by `"==="` characters and followed by a tab-separated character `(\t)`. The output is sent to the console.
-- `echo -e $AC"\t"$ORG"\t"$product > tb.tsv` prints out the values of the `$AC`, `$ORG`, and `$product` variables separated by tabs and sends the output to a file named `tb.tsv`. 
-- The `>>`  operator is used for redirecting the output of a command to a file in append mode.
+- `echo -e $AC"\t"$ORG"\t"$product > tb.tsv` prints out the values of the `$AC`, `$ORG`, and `$product` variables separated by tabs `"\t"` and sends the output to a file named `tb.tsv`. 
+- The `>>` operator is used for redirecting the output of a command to a file in append mode.
 
 
 ### Method 3
@@ -151,66 +151,27 @@ Explanation:
 ## QUESTION 4
 ### Method 1
 #### Creating FASTA (nucleotide) file from gb file.
-
-Concatenates all files in the current directory with the extension `.gb`.
-```bash
-$ cat *.gb
-```
-
-The regular expression "^ |AC " matches lines that start with a space or have "AC " in them. This filters out lines that don't match the desired pattern.
-```bash
-$ grep -E '^ |AC '
-```
-
-Removes all spaces from each line.
-```bash
-s/ //g
-```
-
-Removes any numbers that appear at the end of each line.
-```bash
-s/[0-9]+$//g
-```
-
-Removes all semicolons from each line.
-```bash
-s/;//g
-```
-
-Replaces all instances of "AC" with ">" because of the beginning of FASTA sequences being ">".
-```bash
-s/AC/>/g
-```
-
-Converts all lowercase letters to uppercase letters.
-```bash
-s/[a-z]/\U&/g
-```
-
-**PIPELINE**
 ```bash 
 $ cat *.gb | grep -E '^ |AC ' | sed -E 's/ //g; s/[0-9]+$//g; s/;//g; s/AC/>/g; s/[a-z]/\U&/g' > mgp120.fa
 ```
+Explanation:
+- `cat *.gb` concatenates all files in the current directory with the extension `.gb`.
+- `grep -E '^ |AC '` The regular expression `^ |AC ` matches lines that start with a space or have `AC ` in them. This filters out lines that do not match the desired pattern.
+- `s/ //g` removes all spaces from each line.
+- `s/[0-9]+$//g` removes any numbers that appear at the end of each line.
+- `s/;//g` removes all semicolons from each line.
+- `s/AC/>/g` replaces all instances of `AC` with `>` because of the beginning of FASTA sequences being `>`.
+- `s/[a-z]/\U&/g` converts all lowercase letters to uppercase letters.
 
 #### Multi-line fasta to Single-line FASTA
-
-**awk** command's **BEGIN** block, which is executed before any input is processed. Sets the **record separator (RS)** to ">", which means that each sequence in the file will be treated as a separate record. Sets the **output field separator (OFS)** to a tab character so that the output will be formatted as tab-separated values.
-```bash 
-$ awk 'BEGIN{RS=">";OFS="\t"}'
-```
-
-Matches all records except the first one (which is typically the header).
-```bash 
-$ NR>1
-```
-
-- `sub("\n","\t")` replaces only the first occurrence of the newline character `\n` with a tab character `\t`.
-- `gsub("\n","")` replaces occurrences in whole string of the newline character `\n` with an empty string
-
-**PIPELINE**
 ```bash 
 $ awk 'BEGIN{RS=">";OFS="\t"}; (NR>1){sub("\n","\t"); gsub("\n",""); print $1,$2} ' mgp120.fa
 ```
+Explanation:
+- `awk 'BEGIN{RS=">";OFS="\t"}'`: `awk` command's `BEGIN` block, which is executed before any input is processed. Sets the `record separator (RS` to `">"`, which means that each sequence in the file will be treated as a separate record. Sets the `output field separator (OFS)` to a tab characterv `"\t"`so that the output will be formatted as tab-separated values.
+- `NR>1` matches all records except the first one (which is typically the header).
+- `sub("\n","\t")` replaces only the first occurrence of the newline character `"\n"` with a tab character `"\t"`.
+- `gsub("\n","")` replaces occurrences in whole string of the newline character `"\n"` with an empty string `""`.
 
 #### Length of every sequence
 ```bash 
@@ -218,13 +179,6 @@ $ awk 'BEGIN{RS=">";OFS="\t"}; (NR>1){sub("\n","\t"); gsub("\n",""); print $1,le
 ```
 
 ### Method 2
-
-This **$..$ command appends the contents of $line to the contents of $seq. 
-
-The **${}** syntax is used to access the value of a variable in bash.
-
-The **//** operator is used for **pattern substitution**, which means that all occurrences of the regular expression [0-9] (i.e., any digit) in $line will be replaced with an empty string, effectively removing all digits from the string. The resulting modified version of $line is then appended to the end of $seq.
-
 ```bash 
 # Function pare_seq()
 $ function pare_seq(){
@@ -247,35 +201,16 @@ $ function pare_seq(){
 	done < $1
 }
 ```
+Explanation:
+- `$..$` command appends the contents of `$line` to the contents of `$seq`. 
+- `${}` syntax is used to access the value of a variable in bash.
+- `//` operator is used for **pattern substitution**, which means that all occurrences of the regular expression `[0-9]` (i.e., any digit) in `$line` will be replaced with an empty string, effectively removing all digits from the string. The resulting modified version of `$line` is then appended to the end of `$seq`.
 
-Removes (i.e., deletes) a file or directory. In this case, rm gp120.fa would delete the file named "gp120.fa" if it exists.
-```bash 
-$ rm gp120.fa
-```
+`rm gp120.fa` removes (i.e., deletes) a file or directory. In this case, rm gp120.fa would delete the file named "gp120.fa" if it exists.
 
-Creates a new empty file named "gp120.fa" if it does not exist, or update the modification time of the file if it does exist.
-```bash 
-$ touch gp120.fa
-```
+`touch gp120.fa` creates a new empty file named "gp120.fa" if it does not exist, or update the modification time of the file if it does exist.
 
-A bash parameter expansion removes the ".gb" extension from the filename in $i. It replaces the first occurrence of ".gb" in the variable with an empty string.
-```bash 
-${i/.gb/}
-```
-
-**basename** extracts the filename from a file path. It takes a path as input and returns only the last component of the path (i.e., the filename).
-
-**$(...)** command substitution in bash. It allows the output of a command to be substituted in place of the command itself.
-
-Extracts the filename from the modified file path (without the ".gb" extension) using the basename command. The resulting filename is then returned as the output of the command substitution.
-```bash 
-$(basename ${i/.gb/})
-```
-
-**fold -** will split long lines of text into multiple lines, with each line containing no more than 20 characters. The line breaks will be inserted at the nearest whitespace character (e.g., space, tab) to the specified width. This is useful for displaying text in a fixed-width format, or for formatting text to fit a specific output device (e.g., a terminal window). For example, given an input file with a long line of text like "The quick brown fox jumps over the lazy dog", this command would split the line into "The quick brown fox jum", "ps over the lazy dog".
 Does the same task pare_seq() for all the ACCs
-
-**PIPELINE**
 ```bash
 $ path="/home/lucianhu/NG3/Assignments/DNA_RNAsequencing"
 $ for i in `find $path -name "*.gb"`; do
@@ -287,4 +222,9 @@ done
 
 $ cat gp120.fa| fold -20
 ```
-
+Explanation:
+- `${i/.gb/}`: A bash parameter expansion removes the `.gb` extension from the filename in `$i`. It replaces the first occurrence of `.gb` in the variable with an empty string.
+- `basename` extracts the filename from a file path. It takes a path as input and returns only the last component of the path (i.e., the filename).
+- `$(...)` command substitution in bash. It allows the output of a command to be substituted in place of the command itself.
+- `(basename ${i/.gb/})` extracts the filename from the modified file path (without the `".gb"` extension) using the basename command. The resulting filename is then returned as the output of the command substitution.
+- `fold -` will split long lines of text into multiple lines, with each line containing no more than 20 characters. The line breaks will be inserted at the nearest whitespace character (e.g., space, tab) to the specified width. This is useful for displaying text in a fixed-width format, or for formatting text to fit a specific output device (e.g., a terminal window). For example, given an input file with a long line of text like `The quick brown fox jumps over the lazy dog`, this command would split the line into `The quick brown fox jum` and `over the lazy dog`.
