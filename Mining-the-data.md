@@ -30,46 +30,24 @@ Makes a table “tb.tsv” with the columns for all records: Accession number; O
 
 ### Method 1
 
-Concatenates (i.e., combine) the contents of all files in the current directory that have a .gb file extension.
-```bash
-$ cat *.gb 
-```
-
-Searches for a pattern in a file using extended regular expressions. The -E option enables the use of extended regular expressions instead of the default basic regular expressions.
-Eg: "|" : indicate alternation between two patterns.
-```bash
-$ grep -E 'AC |OS|/product'
-```
-
-Uses **tr-** translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
-```bash
-$ tr -s " "
-```
-
-Uses **sed-** stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the |; character sequence, and removing all occurrences of the /product= character sequence.
-```bash
-$ sed "s/ //1; s/"|;//g; s/\/product=//g'
-```
-
-Removes all occurrences of the regular expression pattern AC|OS|FT from the input text.
-```bash
-$ sed -E 's/AC|OS|FT//g"
-```
-
-Merges three lines of input into a single line, with each line separated by a tab character.
-```bash
-$ paste - - - 
-```
-
-Redirects the standard output of a command to a file named table.tsv in the current directory.
-```bash
-> table.tsv
-``` 
-
 **PIPELINE**
 ```bash
 $ cat *.gb | grep -E 'AC |OS|/product'| tr -s " " | sed -E 's/AC|OS|FT//g; s/ //1; s/"|;//g; s/\/product=//g' | paste - - - > table.tsv
 ```
+`$ cat *.gb` concatenates (i.e., combine) the contents of all files in the current directory that have a .gb file extension.
+
+`$ grep -E 'AC |OS|/product'` searches for a pattern in a file using extended regular expressions. The -E option enables the use of extended regular expressions instead of the default basic regular expressions.
+Eg: "|" : indicate alternation between two patterns.
+
+`$ tr -s " "` uses **tr-** translate command to squeeze (i.e., remove) consecutive spaces in a text stream and replace them with a single space. 
+
+`$ sed "s/ //1; s/"|;//g; s/\/product=//g'` Uses `sed-` stream editor command to perform multiple text transformations on a text stream or file at once, including removing the first space character in each line, removing all occurrences of the |; character sequence, and removing all occurrences of the /product= character sequence.
+
+`$ sed -E 's/AC|OS|FT//g"` removes all occurrences of the regular expression pattern AC|OS|FT from the input text.
+
+`$ paste - - -` merge three lines of input into a single line, with each line separated by a tab character.
+
+`> table.tsv` redirects the standard output of a command to a file named table.tsv in the current directory.
 
 ### Method 2
 
