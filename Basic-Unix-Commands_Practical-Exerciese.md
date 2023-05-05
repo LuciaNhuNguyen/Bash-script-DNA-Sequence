@@ -35,16 +35,22 @@ $ cut -f1 apple.genes | uniq -c | grep -v " 1 " | wc -l
 
 ## How many genes are there on the ‘+’ strand?
 ```bash
-$ cut -f4 apple.genes | grep "+" | wc -l
-```
+$ cut -f1,4 apple.genes | sort | uniq -c | grep "+" | wc -l
+# Or
+$ cut -f1,4 apple.genes | grep "+" | uniq | wc -l
 
 ## How many genes are there on the ‘-’ strand?
 ```bash
-$ cut -f4 apple.genes | grep "-" | wc -l
+$ cut -f1,4 apple.genes | sort | uniq -c | grep "-" | wc -l
+# Or
+$ cut -f1,4 apple.genes | grep "-" | uniq | wc -l
 ```
 
 ## How many genes are there on chromosome chr1, chr2, ch3?
 ```bash
+cut -f1,3 apple.genes | sort -u | cut -f2 | sort | uniq -c
+
+# Or
 $ cut -f1,3 apple.genes | grep "chr1" | sort -u | wc -l
 
 $ cut -f1,3 apple.genes | grep "chr2" | sort -u | wc -l
@@ -54,6 +60,9 @@ $ cut -f1,3 apple.genes | grep "chr3" | sort -u | wc -l
 
 ## How many transcripts are there on chr1, chr2, chr3?
 ```bash
+cut -f2,3 apple.genes | sort -u | cut -f2 | sort | uniq -c
+
+# Or
 $ cut -f2,3 apple.genes | grep -c "chr1"
 
 $ cut -f2,3 apple.genes | grep -c "chr2"
@@ -85,4 +94,11 @@ $ comm -2 -3 applegenes peargenes
 
 # Genes are specific to the pear species
 $ comm -1 -3 applegenes peargenes 
+```
+
+### How many gene are in commnon to all three conditions?
+```bash
+cut -f1 apple.conditionC | sort -u > sortC
+comm -1 -2 apple.conditionA apple.conditionB > sortAB
+comm -1 -2 sortAB sortC | wc -l
 ```
